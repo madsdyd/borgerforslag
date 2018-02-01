@@ -25,9 +25,13 @@ while true ; do
     DATE=$(date +"%d-%m-%Y%t%H:%M:%S%t")
     ID=$(get_and_grep FT-00124)
     HJ=$(get_and_grep FT-00120)
+    GM=$(get_and_grep FT-00131)
+    UL=$(get_and_grep FT-00005)
 
-    echo -e "$DATE$ID\t$HJ"
-    echo -e "$DATE$ID\t$HJ" >> $LOGFILE
+    LINE="$DATE$ID\t$HJ\t$GM\t$UL"
     
-    sleep 299
+    echo -e $LINE
+    echo -e $LINE >> $LOGFILE
+    
+    sleep 298
 done
