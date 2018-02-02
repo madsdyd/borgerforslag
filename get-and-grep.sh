@@ -30,8 +30,8 @@ while true ; do
 
     LINE="$DATE$ID\t$HJ\t$GM\t$UL"
     
-    echo -e $LINE
-    echo -e $LINE >> $LOGFILE
+    echo -e "$LINE"
+    echo -e "$LINE" >> $LOGFILE
     
     sleep 298
 done
