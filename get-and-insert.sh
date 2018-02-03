@@ -2,6 +2,9 @@
 
 # Script to get values from borgerforslag.
 
+# Error handling in this script is horrible. It is supposed to be run
+# from cron, and then stuff to stderr will be mailed. I hope.
+
 DB=borgerforslag
 DBUSER=borgerforslag
 
@@ -27,13 +30,12 @@ function get_and_count() {
     echo $COUNT
 }
 
-# We get four different proposals
+# We get four different proposals for now.
 for proposal in FT-00124 FT-00120 FT-00131 FT-00005 ; do
     count=$(get_and_count $proposal)
-    test -t 1 && echo "For $proposal, got $count" 
+    test -t 1 && echo "For $proposal, got $count, inserting" 
     echo "For $proposal, got $count" >> $LOGFILE
     mysql -u $DBUSER $DB <<EOF
 insert into data (name, count) values ('$proposal', $count)
 EOF
-#    || die "Unable to insert data for $proposal, $count"
 done;
