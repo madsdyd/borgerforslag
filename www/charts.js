@@ -38,7 +38,7 @@ var chart = c3.generate({
             data: 
 
     {"columns":[["x","2018-02-01T13:45:00"],
-		["Støtter","0" ]
+		["Støtter","0"]
 	       ],
      "xFormat":"%Y-%m-%dT%H:%M:%S",
      "x":"x"}

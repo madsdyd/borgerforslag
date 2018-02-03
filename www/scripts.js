@@ -27,8 +27,8 @@ function getCutoff() {
 			   "index":1},
 			  ....
      */
-    dataArray = chart.data('Støtter')[0].values;
-    if ( dataArray.length > 0 ) {
+    if (chart.data('Støtter').length > 0 ) {
+	dataArray = chart.data('Støtter')[0].values;
 	cutoff = dataArray[dataArray.length-1].x;
     } else {
 	// Before the first borgerforslag... 
