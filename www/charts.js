@@ -2,40 +2,40 @@ var chart = c3.generate({
     bindto: '#chart',
     legend: {
         hide: true
-                //or hide: 'data1'
-                //or hide: ['data1', 'data2']
-                },
+        //or hide: 'data1'
+        //or hide: ['data1', 'data2']
+    },
 
-            zoom : {
+    zoom : {
         enabled: true,
-                rescale : true
-                
-                },
-            point : {
+        rescale : true
+        
+    },
+    point : {
         r : 1.5,
-                focus : {
+        focus : {
             expand : {
                 r : 5
 
-                        }
             }
+        }
 
-        },
-            subchart: {
+    },
+    subchart: {
         show: false
-                },
+    },
 
-            grid: {
+    grid: {
         y: {
             show:true
-                    },
-                x: {
-            show:false,
-                    lines: [                            ]
-   
-                    }
         },
-            data: 
+        x: {
+            show:false,
+            lines: [                            ]
+	    
+        }
+    },
+    data: 
 
     {"columns":[["x","2018-02-01T13:45:00"],
 		["Støtter","0"]
@@ -43,47 +43,47 @@ var chart = c3.generate({
      "xFormat":"%Y-%m-%dT%H:%M:%S",
      "x":"x"}
 
-        ,
-            axis: {
+    ,
+    axis: {
         x: {
             type: 'timeseries',
-                    tick: {
+            tick: {
                 format: '%d %H:%M'
-                        }
             }
         }
-    });
+    }
+});
 
 
 var gauge = c3.generate({
     bindto: '#gauge',
-            data: {
+    data: {
         columns: [
-                  ['data', 0]
-                  ],
-                type: 'gauge'
-                },
-            gauge: {
-            //        label: {
-            //            format: function(value, ratio) {
-            //                return value;
-            //            },
-            //            show: false // to turn off the min/max labels.
-            //        },
-            //    min: 0, // 0 is default, //can handle negative min e.g. vacuum / voltage / current flow / rate of change
-            //    max: 100, // 100 is default
-            //    units: ' %',
-            //    width: 39 // for adjusting arc thickness
-        },
-            color: {
+            ['data', 0]
+        ],
+        type: 'gauge'
+    },
+    gauge: {
+        //        label: {
+        //            format: function(value, ratio) {
+        //                return value;
+        //            },
+        //            show: false // to turn off the min/max labels.
+        //        },
+        //    min: 0, // 0 is default, //can handle negative min e.g. vacuum / voltage / current flow / rate of change
+        //    max: 100, // 100 is default
+        //    units: ' %',
+        //    width: 39 // for adjusting arc thickness
+    },
+    color: {
         pattern: ['#FF0000', '#F97600', '#F6C600', '#60B044'], // the three color levels for the percentage values.
-                threshold: {
-                //            unit: 'value', // percentage is default
-                //            max: 200, // 100 is default
+        threshold: {
+            //            unit: 'value', // percentage is default
+            //            max: 200, // 100 is default
             values: [30, 60, 90, 100]
-                    }
-        },
-            size: {
+        }
+    },
+    size: {
         height: 150
-                }
-    });
+    }
+});
