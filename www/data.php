@@ -21,6 +21,6 @@ while($row = mysqli_fetch_array($results)) {
     $rows[] = $row;
 }
 
-echo json_encode($rows)
+echo json_encode($rows, JSON_NUMERIC_CHECK)
 
 ?>
