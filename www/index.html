@@ -8,12 +8,15 @@
 <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 <script src="js/c3.min.js"></script>
 
+<script src="js/spin.js"></script>
+
 
  </head> 
 <body onLoad="onLoad()">
 <b>Antal støtter til forslag FT-00124 om omskæring af børn</b>
   <div id="chart"></div>
-
+  <div id="spinner"></div>
+  <p></p>
   <div id="gauge"></div>
 
   <script src="charts.js"></script>
@@ -25,19 +28,9 @@
     <input name="updateButton"
 	   type="button"
 	   value="Update"
-	   onclick="updateData(chart)" />
-  </div>
-
-  
-  <div id="option">
-    <input name="getNewDataButton"
-	   type="button"
-	   value="Get"
 	   onclick="getNewData()" />
   </div>
 
   
-  
-
 </body>
 <html>

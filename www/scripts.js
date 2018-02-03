@@ -1,15 +1,4 @@
 
-function updateData(chart) {
-    chart.flow({
-	columns: [
-	    ['x', '2018-02-04T12:00:00' ],
-	    ['Støtter', 10000]
-	],
-	length: 0
-    });
-    updatePage();
-}
-
 // Returns a data object with the last date in "Støtter"
 function getCutoff() {
     // Get the latest date from the chart data1 series, and fetch from that point
@@ -43,12 +32,25 @@ function getNewData() {
     getNewDataCutoff(getCutoff());
 }
 
+// Create a spinner on load, and display it
+var spinner = new Spinner({
+    lines: 8, // The number of lines to draw
+    length: 4, // The length of each line
+    width: 5, // The line thickness
+    radius: 6, // The radius of the inner circle
+    color: '#000', // #rbg or #rrggbb
+    speed: 1, // Rounds per second
+    trail: 100, // Afterglow percentage
+    shadow: true // Whether to render a shadow
+}).spin(document.getElementById("spinner")); 
+
 function onLoad() {
     getNewData();
 }
 
 // cutoff is a Date object.
 function getNewDataCutoff(cutoff) {
+    spinner.spin();
     var xmlhttp = new XMLHttpRequest();
     var url = "data.php?cutoff=" + encodeURI(cutoff.toISOString());
 
@@ -114,6 +116,10 @@ function gotTheNewData(arr) {
     // Note, that the chart can still be rendering when this is called.
     // There is no event to check this. Sadly.
     updatePage();
+
+    // Hide the spinner
+    // document.getElementById("spinner").;
+    spinner.stop();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
