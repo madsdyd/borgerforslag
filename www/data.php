@@ -13,7 +13,7 @@ error_reporting(E_ALL);
 
 require_once('./dbconnect.php');
 
-$sql = "SELECT name, reg_time, count FROM data order by name, reg_time";
+$sql = "SELECT name, reg_time, count FROM data where reg_time > '2018-02-03 12:00:00' order by name, reg_time";
 $results = $connection->query($sql);
 
 $rows = array();
