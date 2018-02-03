@@ -116,8 +116,18 @@ function gotTheNewData(arr) {
 // Functions to update the page when new data has been registered in the chart.
 
 // Value is between 0 and 100%
-function updateGauge(value) {
-    gauge.load({columns:[['data', value]]});
+function updateGauge(dataArray) {
+    // Calculate the stuff for the gauge and update it
+    if ( dataArray.length > 0 ) {
+	// We always need 50000 supporters
+	completion = dataArray[dataArray.length-1].value/50000*100;
+    } else {
+	completion = 0;
+    }
+    if (completion > 100.0) {
+	completion = 100.0;
+    }
+    gauge.load({columns:[['data', completion]]});
 }
 
 // Global variable tracks xgrids, and gets updated based on new data.
@@ -140,13 +150,6 @@ function updateXGrids(values) {
     chart.xgrids(xgrids);
 }
 
-function onChartRendered(){
-    alert("in OnChartRendered");
-    if (newData) {
-	newData = false;
-	updatePage();
-    }
-}
 
 // This function should be called when new data arrives.
 function updatePage() {
@@ -165,26 +168,8 @@ function updatePage() {
 			  ....
      */
     dataArray = chart.data('Støtter')[0].values;
-    
-    updateXGrids();
-    
-    // Calculate the stuff for the gauge and update it
-    if ( dataArray.length > 0 ) {
-	// We always need 50000 supporters
-	completion = dataArray[dataArray.length-1].value/50000*100;
-    } else {
-	completion = 0;
-    }
-    if (completion > 100.0) {
-	completion = 100.0;
-    }
-    updateGauge(completion);
-    
-    
+    updateGauge(dataArray);
     // ISSUE: Adding a lot of data, screws up the ticks... 
-    // TODO: Update chart with vertical lines
     // TODO: Update other stuff?
-
-
 }
 
