@@ -9,23 +9,23 @@ function updateData(chart) {
     });
     updatePage();
 }
-    
+
 // Returns a data object with the last date in "Støtter"
 function getCutoff() {
     // Get the latest date from the chart data1 series, and fetch from that point
     /* This is formatted like this:
-    
-    cutoff: [ {"id":"Støtter",
-	       "id_org":"Støtter",
-	       "values":[ {"x":"2018-02-01T14:09:59.000Z",
-			   "value":650,
-			   "id":"Støtter",
-			   "index":0},
-			  {"x":"2018-02-01T14:14:59.000Z",
-			   "value":692,
-			   "id":"Støtter",
-			   "index":1},
-			  ....
+     
+     cutoff: [ {"id":"Støtter",
+     "id_org":"Støtter",
+     "values":[ {"x":"2018-02-01T14:09:59.000Z",
+     "value":650,
+     "id":"Støtter",
+     "index":0},
+     {"x":"2018-02-01T14:14:59.000Z",
+     "value":692,
+     "id":"Støtter",
+     "index":1},
+     ....
      */
     if (chart.data('Støtter').length > 0 ) {
 	dataArray = chart.data('Støtter')[0].values;
@@ -41,6 +41,10 @@ function getCutoff() {
 // Can we make XMLHttpRequest?
 function getNewData() {
     getNewDataCutoff(getCutoff());
+}
+
+function onLoad() {
+    getNewData();
 }
 
 // cutoff is a Date object.
@@ -59,20 +63,20 @@ function getNewDataCutoff(cutoff) {
 }
 
 /* Function called when we get new data. The array contains information in this format:
-[ {"0":"FT-00005",
-   "1":"2018-02-03 11:20:55",
-   "2":39093,
-   "name":"FT-00005",
-   "reg_time":"2018-02-03T11:20:55+01:00",
-   "count":39093},
-  {"0":"FT-00005",
-   "1":"2018-02-03 11:22:56",
-   "2":39101,
-   "name":"FT-00005",
-   "reg_time":"2018-02-03T11:22:56+01:00",
-   "count":39101},
+ [ {"0":"FT-00005",
+ "1":"2018-02-03 11:20:55",
+ "2":39093,
+ "name":"FT-00005",
+ "reg_time":"2018-02-03T11:20:55+01:00",
+ "count":39093},
+ {"0":"FT-00005",
+ "1":"2018-02-03 11:22:56",
+ "2":39101,
+ "name":"FT-00005",
+ "reg_time":"2018-02-03T11:22:56+01:00",
+ "count":39101},
  That is, an array with new data points to add..
-  */
+ */
 function gotTheNewData(arr) {
     // alert("Got this: " + JSON.stringify(arr));
 
@@ -155,17 +159,17 @@ function updateXGrids(values) {
 function updatePage() {
     // Get the chart data - we are going to use that for our updates.
     /* Format something like this.
-    cutoff: [ {"id":"Støtter",
-	       "id_org":"Støtter",
-	       "values":[ {"x":"2018-02-01T14:09:59.000Z",
-			   "value":650,
-			   "id":"Støtter",
-			   "index":0},
-			  {"x":"2018-02-01T14:14:59.000Z",
-			   "value":692,
-			   "id":"Støtter",
-			   "index":1},
-			  ....
+     cutoff: [ {"id":"Støtter",
+     "id_org":"Støtter",
+     "values":[ {"x":"2018-02-01T14:09:59.000Z",
+     "value":650,
+     "id":"Støtter",
+     "index":0},
+     {"x":"2018-02-01T14:14:59.000Z",
+     "value":692,
+     "id":"Støtter",
+     "index":1},
+     ....
      */
     dataArray = chart.data('Støtter')[0].values;
     updateGauge(dataArray);
