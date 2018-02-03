@@ -12,8 +12,8 @@ create table if not exists proposals (
 create table if not exists data (
   name varchar(20) not null, -- name of the proposal
   reg_time datetime not null default now(), -- datetime of registering
-  count int unsigned,
-  index main_i (name, reg_time),
+  count int unsigned, -- The actual count
+  index main_i (name, reg_time), -- Main index we expect to use
   index name_i (name),
   index reg_time_i (reg_time),
   index count_i (count)
