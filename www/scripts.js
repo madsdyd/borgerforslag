@@ -45,8 +45,24 @@ var spinner = new Spinner({
 }).spin(document.getElementById("spinner")); 
 
 function onLoad() {
+    document.getElementById('autoupdate').checked = true;
     getNewData();
 }
+
+// Get new data, if auto update enabled
+function onAutoUpdate() {
+    if ( document.getElementById('autoupdate').checked ) {
+	// alert('Getting data');
+	getNewData();
+    } else {
+	// alert('Not getting data');
+    }
+}
+
+// Install a handler, every 5 minute
+window.setInterval(function() {
+    onAutoUpdate();
+}, 5*60*1000 );
 
 // cutoff is a Date object.
 function getNewDataCutoff(cutoff) {

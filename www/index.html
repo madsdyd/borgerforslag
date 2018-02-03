@@ -3,6 +3,7 @@
   <meta charset="UTF-8">
 <!-- Load c3.css -->
 <link href="js/c3.css" rel="stylesheet">
+<link href="bf.css" rel="stylesheet">
 
 <!-- Load d3.js and c3.js -->
 <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
@@ -13,7 +14,7 @@
 
  </head> 
 <body onLoad="onLoad()">
-<b>Antal støtter til forslag FT-00124 om omskæring af børn</b>
+<H3>Antal støtter til forslag FT-00124 om omskæring af børn</H3>
   <div id="chart"></div>
   <div id="spinner"></div>
   <p></p>
@@ -23,13 +24,15 @@
   <script src="scripts.js"></script>
 
 
-  <!--- Update button --->
+  <!--- Update buttons --->
   <div id="option">
-    <input name="updateButton"
-	   type="button"
-	   value="Update"
-	   onclick="getNewData()" />
+  <input id="autoupdate" type="checkbox" checked>Auto update
+  <input id="updateButton"
+	 type="button"
+	 value="Update now"
+	 onclick="getNewData()" />
   </div>
+  
 
   
 </body>
