@@ -9,9 +9,8 @@ function updateData(chart) {
     });
 }
     
-
-// Can we make XMLHttpRequest?
-function getNewData() {
+// Returns a data object with the last date in "Støtter"
+function getCutoff() {
     // Get the latest date from the chart data1 series, and fetch from that point
     /* This is formatted like this:
     
@@ -34,8 +33,13 @@ function getNewData() {
 	// Before the first borgerforslag... 
 	cutoff = new Date ( 2018, 01, 01, 12, 0, 0, 0 );
     }
-    // alert("cutoff: " + JSON.stringify(cutoff));
-    getNewDataCutoff(cutoff);
+    return cutoff;
+}
+
+
+// Can we make XMLHttpRequest?
+function getNewData() {
+    getNewDataCutoff(getCutoff());
 }
 
 // cutoff is a Date object.
@@ -53,7 +57,53 @@ function getNewDataCutoff(cutoff) {
     xmlhttp.send();
 }
 
-
+/* Function called when we get new data. The array contains information in this format:
+[ {"0":"FT-00005",
+   "1":"2018-02-03 11:20:55",
+   "2":39093,
+   "name":"FT-00005",
+   "reg_time":"2018-02-03T11:20:55+01:00",
+   "count":39093},
+  {"0":"FT-00005",
+   "1":"2018-02-03 11:22:56",
+   "2":39101,
+   "name":"FT-00005",
+   "reg_time":"2018-02-03T11:22:56+01:00",
+   "count":39101},
+ That is, an array with new data points to add..
+  */
 function gotTheNewData(arr) {
-    alert("Got this: " + JSON.stringify(arr));
+    // alert("Got this: " + JSON.stringify(arr));
+
+    // Convert all reg_time to Date objects
+    arr.forEach( e => e.reg_time = new Date(e.reg_time) );
+
+    // Get rid of all other than FT-00124
+    arr = arr.filter( e => e.name === "FT-00124" );
+
+    // Filter out all that are younger than our cutoff (we are async ftw)
+    // (But not racecondition proof. If you click too may times... hmm).
+    cutoff = getCutoff();
+    // alert("cutoff is" + cutoff + ", " + cutoff.getTime());
+    arr = arr.filter( e => e.reg_time.getTime() > cutoff.getTime() );
+
+    // Add all the data to the chart "Støtter" dataseries.
+    x = [ 'x' ];
+    stoetter = [ 'Støtter' ];
+    columns = [ x, stoetter ];
+    arr.forEach( e => { x.push(e.reg_time) ; stoetter.push(e.count); } );
+
+    alert("Columns are : " + JSON.stringify(columns, null, 2));
+    
+    // Flow it.
+    chart.flow({
+	columns: columns,
+	length: 0
+    });
+
+    // TODO: Update chart with vertical lines
+    // TODO: Update gauge
+    // TODO: Update other stuff?
+    
+    
 }

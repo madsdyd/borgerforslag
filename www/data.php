@@ -8,6 +8,16 @@ error_reporting(E_ALL);
 // Target format
 // [ { name: , reg_time: , count: }, ... ] - that is, a raw dump from the database.
 
+// Php sucks.
+class MyDateTime extends \DateTime implements \JsonSerializable
+{
+    public function jsonSerialize()
+    {
+        return $this->format("c");
+    }
+}
+
+
 // phpinfo(INFO_MODULES);
 require_once('./dbconnect.php');
 
@@ -23,6 +33,7 @@ $results = $connection->query($sql);
 
 $rows = array();
 while($row = mysqli_fetch_array($results)) {
+    $row['reg_time'] = new MyDateTime($row['reg_time']);
     $rows[] = $row;
 }
 
