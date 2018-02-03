@@ -26,6 +26,16 @@ function getCutoff() {
     return cutoff;
 }
 
+function getLastValue() {
+    if (chart.data('Støtter').length > 0 ) {
+	dataArray = chart.data('Støtter')[0].values;
+	value = dataArray[dataArray.length-1].value;
+    } else {
+	// Before the first borgerforslag... 
+	value = -1;
+    }
+    return value;
+}
 
 // Can we make XMLHttpRequest?
 function getNewData() {
@@ -141,6 +151,8 @@ function gotTheNewData(arr) {
 ////////////////////////////////////////////////////////////////////////////////
 // Functions to update the page when new data has been registered in the chart.
 
+////////////////////////////////////////////////////////////////////////////////
+// The gauge
 // Value is between 0 and 100%
 function updateGauge(dataArray) {
     // Calculate the stuff for the gauge and update it
@@ -156,6 +168,7 @@ function updateGauge(dataArray) {
     gauge.load({columns:[['data', completion]]});
 }
 
+////////////////////////////////////////////////////////////////////////////////
 // Global variable tracks xgrids, and gets updated based on new data.
 xgrids = [{value: new Date("2018-02-01T12:00:00"), text: '12:00'}];
 // Argument is array of date values.
@@ -176,6 +189,16 @@ function updateXGrids(values) {
     chart.xgrids(xgrids);
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// The status label
+function updateStatus() {
+    var rd = getCutoff();
+    var value = getLastValue();
+    var d = new Date();
+    var ts = d.getHours() + ":" + (d.getMinutes()<10?'0':'') + d.getMinutes() + ":" + (d.getSeconds()<10?'0':'') + d.getSeconds();
+    var rts = rd.getHours() + ":" + (rd.getMinutes()<10?'0':'') + rd.getMinutes() + ":" + (rd.getSeconds()<10?'0':'') + rd.getSeconds();
+    document.getElementById("status").innerHTML = "Last update at " + ts + ". Last value is " + value + ", retrieved at " + rts + ".";
+}
 
 // This function should be called when new data arrives.
 function updatePage() {
@@ -195,7 +218,7 @@ function updatePage() {
      */
     dataArray = chart.data('Støtter')[0].values;
     updateGauge(dataArray);
-    // ISSUE: Adding a lot of data, screws up the ticks... 
-    // TODO: Update other stuff?
+    updateStatus();
+    // ISSUE: Adding a lot of data, screws up the ticks sometimes.
 }
 
