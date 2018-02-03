@@ -1,4 +1,4 @@
-// Test function.
+
 function updateData(chart) {
     chart.flow({
 	columns: [
@@ -7,6 +7,7 @@ function updateData(chart) {
 	],
 	length: 0
     });
+    updatePage();
 }
     
 // Returns a data object with the last date in "Støtter"
@@ -93,7 +94,7 @@ function gotTheNewData(arr) {
     columns = [ x, stoetter ];
     arr.forEach( e => { x.push(e.reg_time) ; stoetter.push(e.count); } );
 
-    alert("Columns are : " + JSON.stringify(columns, null, 2));
+    // alert("Columns are : " + JSON.stringify(columns, null, 2));
     
     // Flow it.
     chart.flow({
@@ -101,9 +102,54 @@ function gotTheNewData(arr) {
 	length: 0
     });
 
-    // TODO: Update chart with vertical lines
-    // TODO: Update gauge
-    // TODO: Update other stuff?
-    
-    
+    // Make sure the page is update
+    updatePage();
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// Functions to update the page when new data has been registered in the chart.
+
+// Value is between 0 and 100%
+function updateGauge(value) {
+    gauge.load({columns:[['data', value]]});
+}
+
+
+// This function should be called when new data arrives.
+function updatePage() {
+    // Get the chart data - we are going to use that for our updates.
+    /* Format something like this.
+    cutoff: [ {"id":"Støtter",
+	       "id_org":"Støtter",
+	       "values":[ {"x":"2018-02-01T14:09:59.000Z",
+			   "value":650,
+			   "id":"Støtter",
+			   "index":0},
+			  {"x":"2018-02-01T14:14:59.000Z",
+			   "value":692,
+			   "id":"Støtter",
+			   "index":1},
+			  ....
+     */
+    dataArray = chart.data('Støtter')[0].values;
+
+    // Calculate the stuff for the gauge and update it
+    if ( dataArray.length > 0 ) {
+	// We always need 50000 supporters
+	completion = dataArray[dataArray.length-1].value/50000*100;
+    } else {
+	completion = 0;
+    }
+    if (completion > 100.0) {
+	completion = 100.0;
+    }
+    updateGauge(completion);
+    
+    
+    // ISSUE: Adding a lot of data, screws up the ticks... 
+    // TODO: Update chart with vertical lines
+    // TODO: Update other stuff?
+
+
+}
+

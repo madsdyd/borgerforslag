@@ -63,7 +63,7 @@ var gauge = c3.generate({
     bindto: '#gauge',
             data: {
         columns: [
-                  ['data', 14.9]
+                  ['data', 0]
                   ],
                 type: 'gauge'
                 },
@@ -88,6 +88,6 @@ var gauge = c3.generate({
                     }
         },
             size: {
-        height: 180
+        height: 150
                 }
     });
