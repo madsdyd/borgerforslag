@@ -95,6 +95,10 @@ function gotTheNewData(arr) {
     arr.forEach( e => { x.push(e.reg_time) ; stoetter.push(e.count); } );
 
     // alert("Columns are : " + JSON.stringify(columns, null, 2));
+
+    // We have to update the xgrids before floating the values.
+    updateXGrids(x);
+
     
     // Flow it.
     chart.flow({
@@ -102,7 +106,9 @@ function gotTheNewData(arr) {
 	length: 0
     });
 
-    // Make sure the page is update
+    // Make sure the page is updated
+    // Note, that the chart can still be rendering when this is called.
+    // There is no event to check this. Sadly.
     updatePage();
 }
 
@@ -114,6 +120,33 @@ function updateGauge(value) {
     gauge.load({columns:[['data', value]]});
 }
 
+// Global variable tracks xgrids, and gets updated based on new data.
+xgrids = [{value: new Date("2018-02-01T12:00:00"), text: '12:00'}];
+// Argument is array of date values.
+function updateXGrids(values) {
+    // Find the last existing value
+    curMax = xgrids[xgrids.length - 1].value;
+    // First element is "x"
+    for (var i = 1; i < values.length; ++i) {
+	while ( values[i].getTime() > curMax.getTime() ) {
+	    // Add a new, 6 hours in the future
+	    var nextDate = new Date(curMax);
+	    nextDate.setTime(curMax.getTime() + (6*60*60*1000));
+	    xgrids.push( { value: nextDate, text: nextDate.getHours() + ":00" } );
+	    curMax =  nextDate;
+	}
+    }
+    // alert( "Got this: " + JSON.stringify(xgrids) );
+    chart.xgrids(xgrids);
+}
+
+function onChartRendered(){
+    alert("in OnChartRendered");
+    if (newData) {
+	newData = false;
+	updatePage();
+    }
+}
 
 // This function should be called when new data arrives.
 function updatePage() {
@@ -132,7 +165,9 @@ function updatePage() {
 			  ....
      */
     dataArray = chart.data('Støtter')[0].values;
-
+    
+    updateXGrids();
+    
     // Calculate the stuff for the gauge and update it
     if ( dataArray.length > 0 ) {
 	// We always need 50000 supporters

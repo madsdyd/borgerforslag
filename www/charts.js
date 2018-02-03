@@ -1,6 +1,6 @@
 var chart = c3.generate({
     bindto: '#chart',
-            legend: {
+    legend: {
         hide: true
                 //or hide: 'data1'
                 //or hide: ['data1', 'data2']
@@ -31,15 +31,7 @@ var chart = c3.generate({
                     },
                 x: {
             show:false,
-                    lines: [
-                            {value: "2018-02-01T12:00:00", text: '12:00'},
-                            {value: "2018-02-01T18:00:00", text: '18:00'},
-                            {value: "2018-02-02T00:00:00", text: '00:00'},
-                            {value: "2018-02-02T06:00:00", text: '06:00'},
-                            {value: "2018-02-02T12:00:00", text: '12:00'},
-                            {value: "2018-02-02T18:00:00", text: '18:00'},
-                            {value: "2018-02-03T00:00:00", text: '00:00'}
-                            ]
+                    lines: [                            ]
    
                     }
         },
