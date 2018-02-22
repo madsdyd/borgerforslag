@@ -33,8 +33,11 @@ $results = $connection->query($sql);
 
 $rows = array();
 while($row = mysqli_fetch_array($results)) {
-    $row['reg_time'] = new MyDateTime($row['reg_time']);
-    $rows[] = $row;
+    $new_row = [];
+    $new_row['name']     = $row['name'];
+    $new_row['reg_time'] = new MyDateTime($row['reg_time']);
+    $new_row['count']    = $row['count'];
+    $rows[] = $new_row;
 }
 
 echo json_encode($rows, JSON_NUMERIC_CHECK)
