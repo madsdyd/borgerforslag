@@ -28,7 +28,7 @@ $cutoff = isset ($_GET['cutoff'])
     : "2018-01-01T12:00:00.000Z";
 
 
-$sql = "SELECT name, reg_time, count FROM data where reg_time > '$cutoff' order by name, reg_time";
+$sql = "SELECT name, reg_time, count FROM data where reg_time > '$cutoff' and name='FT-00124' order by name, reg_time";
 $results = $connection->query($sql);
 
 $rows = array();
