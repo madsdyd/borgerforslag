@@ -350,7 +350,11 @@ function onLoad() {
     fromDate.setDate(fromDate.getDate() - 3);
     today = new Date();
     // document.getElementById('fromDate').max = fromDate;
-    document.getElementById('fromDate').valueAsDate = fromDate;
+    try {
+	document.getElementById('fromDate').valueAsDate = fromDate;
+    } catch (err) {
+	// Silently fail...
+    }
     getNewData();
 }
 
