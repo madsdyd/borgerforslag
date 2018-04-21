@@ -6,6 +6,10 @@ var chart = c3.generate({
         //or hide: ['data1', 'data2']
     },
 
+    // Disable transition to improve initial rendering performance.
+    transition: {
+	duration : 0
+    },
     zoom : {
         enabled: true,
         rescale : true

@@ -55,6 +55,7 @@ var bf = function() {
 
 
 // Returns a data object with the last date in "Støtter"
+// Hack upon hack in here.
 function getCutoff() {
     // Get the latest date from the chart data1 series, and fetch from that point
     /* This is formatted like this:
@@ -71,15 +72,27 @@ function getCutoff() {
      "index":1},
      ....
      */
-    if (chart.data('Støtter').length > 0 ) {
+    if ( getCutoff.nextCutoff ) {
+	return getCutoff.nextCutoff;
+    }
+
+    // We start the chart with a single value, otherwise the chart software is weird
+    // We therefore ignore the first value...
+    if (chart.data('Støtter').length > 0 && chart.data('Støtter')[0].values.length > 1) {
 	dataArray = chart.data('Støtter')[0].values;
 	cutoff = dataArray[dataArray.length-1].x;
     } else {
 	// Before the first borgerforslag... 
-	cutoff = new Date ( 2018, 01, 01, 12, 0, 0, 0 );
+	// cutoff = new Date ( 2018, 01, 01, 12, 0, 0, 0 );
+	// Show only the last week, initially
+	cutoff = new Date();
+	cutoff.setDate(cutoff.getDate() - 7);
     }
     return cutoff;
 }
+
+getCutoff.nextCutoff = undefined;
+
 
 function getLastValue() {
     if (chart.data('Støtter').length > 0 ) {
@@ -92,10 +105,7 @@ function getLastValue() {
     return value;
 }
 
-// Can we make XMLHttpRequest?
-function getNewData() {
-    getNewDataCutoff(getCutoff());
-}
+
 
 // Create a spinner on load, and display it
 var spinner = new Spinner({
@@ -129,9 +139,11 @@ window.setInterval(function() {
     onAutoUpdate();
 }, 5*60*1000 );
 
+
 // cutoff is a Date object.
 function getNewDataCutoff(cutoff) {
     spinner.spin();
+    setStatus("Fetching data newer than " + cutoff);
     var xmlhttp = new XMLHttpRequest();
     var url = "data.php?cutoff=" + encodeURI(cutoff.toISOString());
 
@@ -162,6 +174,7 @@ function getNewDataCutoff(cutoff) {
  */
 function gotTheNewData(arr) {
     // alert("Got this: " + JSON.stringify(arr));
+    setStatus("Got new data, converting from json to js.");
 
     // Get rid of all other than FT-00124
     // Should not really contain any though.
@@ -172,27 +185,41 @@ function gotTheNewData(arr) {
 
     // Filter out all that are younger than our cutoff (we are async ftw)
     // (But not racecondition proof. If you click too may times... hmm).
-    cutoff = getCutoff();
+    var cutoff = getCutoff();
     // alert("cutoff is" + cutoff + ", " + cutoff.getTime());
     arr = arr.filter( e => e.reg_time.getTime() > cutoff.getTime() );
 
     // Add all the data to the chart "Støtter" dataseries.
-    x = [ 'x' ];
-    stoetter = [ 'Støtter' ];
-    columns = [ x, stoetter ];
+    var x = [ 'x' ];
+    var stoetter = [ 'Støtter' ];
+    var columns = [ x, stoetter ];
     arr.forEach( e => { x.push(e.reg_time) ; stoetter.push(e.count); } );
 
     // alert("Columns are : " + JSON.stringify(columns, null, 2));
 
+    setStatus("Got new data, loading data into graph");
+    
     // We have to update the xgrids before floating the values.
     updateXGrids(x);
 
     
     // Flow it.
-    chart.flow({
-	columns: columns,
-	length: 0
-    });
+    // Note, first load, we load (set) it, otherwise we flow (append).
+    if (gotTheNewData.clearNextTime) {
+	chart.load({
+	    columns: columns,
+	    length: 0
+	});
+	gotTheNewData.clearNextTime = false;
+    } else {
+	chart.flow({
+	    columns: columns,
+	    length: 0
+	});
+    }
+
+    // Reset nextCutoff, if it was set earlier
+    getCutoff.nextCutoff = undefined;
 
     // Make sure the page is updated
     // Note, that the chart can still be rendering when this is called.
@@ -203,6 +230,9 @@ function gotTheNewData(arr) {
     // document.getElementById("spinner").;
     spinner.stop();
 }
+
+// Hackish..
+gotTheNewData.clearNextTime = true;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Functions to update the page when new data has been registered in the chart.
@@ -245,16 +275,6 @@ function updateXGrids(values) {
     chart.xgrids(xgrids);
 }
 
-////////////////////////////////////////////////////////////////////////////////
-// The status label
-function updateStatus() {
-    var rd = getCutoff();
-    var value = getLastValue();
-    var d = new Date();
-    var ts = d.getHours() + ":" + (d.getMinutes()<10?'0':'') + d.getMinutes() + ":" + (d.getSeconds()<10?'0':'') + d.getSeconds();
-    var rts = rd.getHours() + ":" + (rd.getMinutes()<10?'0':'') + rd.getMinutes() + ":" + (rd.getSeconds()<10?'0':'') + rd.getSeconds();
-    document.getElementById("status").innerHTML = "Last update at " + ts + ". Last value is " + value + ", retrieved at " + rts + ".";
-}
 
 // This function should be called when new data arrives.
 function updatePage() {
@@ -277,4 +297,48 @@ function updatePage() {
     updateStatus();
     // ISSUE: Adding a lot of data, screws up the ticks sometimes.
 }
+
+
+
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+// INTERFACE FEEDBACK
+// "Low level" set status function
+function setStatus(text) {
+    document.getElementById("status").innerHTML = text;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// The status label is updated with data here.
+function updateStatus() {
+    var rd = getCutoff();
+    var value = getLastValue();
+    var d = new Date();
+    var ts = d.getHours() + ":" + (d.getMinutes()<10?'0':'') + d.getMinutes() + ":" + (d.getSeconds()<10?'0':'') + d.getSeconds();
+    var rts = rd.getHours() + ":" + (rd.getMinutes()<10?'0':'') + rd.getMinutes() + ":" + (rd.getSeconds()<10?'0':'') + rd.getSeconds();
+    setStatus("Last update at " + ts + ". Last value is " + value + ", retrieved at " + rts + ".");
+}
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+// BUTTON HANDLERS
+// Can we make XMLHttpRequest?
+function getNewData() {
+    getNewDataCutoff(getCutoff());
+}
+
+// This is for Lena
+// All is a hack.
+function getAllData() {
+    gotTheNewData.clearNextTime = true;
+    getCutoff.nextCutoff = new Date ( 2018, 01, 01, 12, 0, 0, 0 );
+    getNewDataCutoff(getCutoff());
+    // Reset of nextCutoff goes into async handler...
+}
+
+
 
