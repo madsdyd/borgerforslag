@@ -353,6 +353,9 @@ function onLoad() {
     try {
 	document.getElementById('fromDate').valueAsDate = fromDate;
     } catch (err) {
+	// Hide the show from, if it does not work.
+	document.getElementById('showFromDateButton').style.display = "none";
+	document.getElementById('fromDate').style.display = "none";
 	// Silently fail...
     }
     getNewData();
