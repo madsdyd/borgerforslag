@@ -106,24 +106,6 @@ function getLastValue() {
 }
 
 
-
-// Create a spinner on load, and display it
-var spinner = new Spinner({
-    lines: 8, // The number of lines to draw
-    length: 4, // The length of each line
-    width: 5, // The line thickness
-    radius: 6, // The radius of the inner circle
-    color: '#000', // #rbg or #rrggbb
-    speed: 1, // Rounds per second
-    trail: 100, // Afterglow percentage
-    shadow: true // Whether to render a shadow
-}).spin(document.getElementById("spinner")); 
-
-function onLoad() {
-    document.getElementById('autoupdate').checked = true;
-    getNewData();
-}
-
 // Get new data, if auto update enabled
 function onAutoUpdate() {
     if ( document.getElementById('autoupdate').checked ) {
@@ -338,6 +320,38 @@ function getAllData() {
     getCutoff.nextCutoff = new Date ( 2018, 01, 01, 12, 0, 0, 0 );
     getNewDataCutoff(getCutoff());
     // Reset of nextCutoff goes into async handler...
+}
+
+function getFromDate() {
+    gotTheNewData.clearNextTime = true;
+    getCutoff.nextCutoff = document.getElementById('fromDate').valueAsDate;
+    getNewDataCutoff(getCutoff());
+    // Reset of nextCutoff goes into async handler...
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// MAIN / ON LOAD
+
+// Create a spinner on load, and display it
+var spinner = new Spinner({
+    lines: 8, // The number of lines to draw
+    length: 4, // The length of each line
+    width: 5, // The line thickness
+    radius: 6, // The radius of the inner circle
+    color: '#000', // #rbg or #rrggbb
+    speed: 1, // Rounds per second
+    trail: 100, // Afterglow percentage
+    shadow: true // Whether to render a shadow
+}).spin(document.getElementById("spinner")); 
+
+function onLoad() {
+    document.getElementById('autoupdate').checked = true;
+    fromDate = new Date();
+    fromDate.setDate(fromDate.getDate() - 3);
+    today = new Date();
+    // document.getElementById('fromDate').max = fromDate;
+    document.getElementById('fromDate').valueAsDate = fromDate;
+    getNewData();
 }
 
 
