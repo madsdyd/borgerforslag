@@ -1,3 +1,58 @@
+// Scripts for tracking data in borgerforslag
+var bf = function() {
+    var res = {};
+
+    // This is where we store the raw data received from the server.
+    // The data is assumed to have two elements, reg_time and count;
+    res.data = [];
+
+    // This is where we store the data that should be added to the chart.
+    res.newChartData = [];
+    
+
+    /** Add some data from the server. 
+     * The source format contains three datapoints, the name, reg_time and count.
+     * Convert to javascript data types, then add to our list */
+    res.addDataFromServer = function(arr) {
+	// Convert all reg_time to Date objects
+	arr.forEach( e => e.reg_time = new Date(e.reg_time) );
+
+	// Filter out all that are younger than our cutoff (we are async ftw)
+	// (But not racecondition proof. If you click too may times... hmm).
+	cutoff = this.getLastRegTime();
+	arr = arr.filter( e => e.reg_time.getTime() > cutoff.getTime() );
+
+	// Finally, add all data that meet our criteria to the "newChartData" array
+	// TODO : Do some nifty thing here.
+	arr.forEach( e => this.newChartData.push(e) );
+    }
+
+    /** Get the last element. 
+     * If no elements, return undefined */
+    res.getLastElement = function() {
+	if (this.data.length > 0) {
+	    return this.data[this.data.length-1];
+	} else {
+	    return undefined;
+	}
+    }
+    
+    res.getLastRegTime = function() {
+	var lastData = this.getLastElement();
+	if ( ! lastData ) {
+	    // Before the first borgerforslag... 
+	    return new Date ( 2018, 01, 01, 12, 0, 0, 0 );
+	} else {
+	    return lastData.reg_time;
+	}
+    }
+
+
+    return res;
+}();
+
+
+
 
 // Returns a data object with the last date in "Støtter"
 function getCutoff() {
@@ -108,11 +163,12 @@ function getNewDataCutoff(cutoff) {
 function gotTheNewData(arr) {
     // alert("Got this: " + JSON.stringify(arr));
 
+    // Get rid of all other than FT-00124
+    // Should not really contain any though.
+    arr = arr.filter( e => e.name === "FT-00124" );
+
     // Convert all reg_time to Date objects
     arr.forEach( e => e.reg_time = new Date(e.reg_time) );
-
-    // Get rid of all other than FT-00124
-    arr = arr.filter( e => e.name === "FT-00124" );
 
     // Filter out all that are younger than our cutoff (we are async ftw)
     // (But not racecondition proof. If you click too may times... hmm).
