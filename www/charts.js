@@ -52,7 +52,7 @@ var chart = c3.generate({
         x: {
             type: 'timeseries',
             tick: {
-                format: '%d %H:%M'
+                format: '%d/%m %H:%M'
             }
         }
     }
