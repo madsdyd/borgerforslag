@@ -80,7 +80,7 @@ var gauge = c3.generate({
         threshold: {
             //            unit: 'value', // percentage is default
             //            max: 200, // 100 is default
-            values: [30, 60, 90, 100]
+            values: [30, 60, 100, 101]
         }
     },
     size: {
