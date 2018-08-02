@@ -31,7 +31,7 @@ function get_and_count() {
 }
 
 # We get four different proposals for now.
-for proposal in FT-00124 FT-00104 FT-00180 FT-00193 FT-00042 FT-00201 FT-00259 FT-00110 FT-00192 FT-00174 FT-00289 FT-00192 FT-00090 FT-00180 FT-00146 FT-00598 FT-00410 FT-00273 FT-00209; do
+for proposal in FT-00124 FT-00104 FT-00180 FT-00193 FT-00042 FT-00201 FT-00259 FT-00110 FT-00192 FT-00289 FT-00192 FT-00090 FT-00180 FT-00146 FT-00598 FT-00410 FT-00273 FT-00209; do
     count=$(get_and_count $proposal)
     test -t 1 && echo "For $proposal, got $count, inserting" 
     echo "For $proposal, got $count" >> $LOGFILE
